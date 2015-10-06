@@ -20,7 +20,7 @@ import java.util.*;
 public class Bot extends BucketbotBase {
 
 	float frustration = 0.0f;	//0.0->1.0 for maximal frustration
-	int stuckCount = 0;			//number of updates not able to move at all
+	int stuckCount = 0;			//number of updates not able to move at all  something
 	static final double sqrt2 = Math.sqrt(2.0);
 
 	public Bot() {};

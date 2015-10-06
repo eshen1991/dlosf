@@ -5,10 +5,10 @@ package com.dlosf.sim.simple;
 
 import alphabetsoup.base.*;
 import alphabetsoup.framework.*;
+import alphabetsoup.framework.Map;
 import alphabetsoup.userinterface.*;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**Example AlphabetSoup simulation file, which puts buckets in a grid, lays out bots randomly,
  * parameratizes everything based on "alphabetsoup.config", and starts everything running.
@@ -26,6 +26,109 @@ public class SimulationWorldSimple extends SimulationWorld {
 		return simulationWorldExample;
 	}
 
+
+	public SimulationWorldSimple(Bucket[] buckets,
+								 Bucketbot[] robots,
+								 LetterStation[] letterStations,
+								 WordStation[] wordStations,
+								 WordList wordList,
+								 List<Circle> unusedBucketStorageLocations,
+								 LinkedHashSet<Bucket> unusedBucket,
+								 HashMap<Bucket,Circle> usedBucketStorageLocations,
+								 Properties params)
+	{
+		super();
+		simulationWorldExample = this;
+
+		float map_width = Float.parseFloat(params.getProperty("map_width"));
+		float map_length = Float.parseFloat(params.getProperty("map_length"));
+		float tolerance = Float.parseFloat(params.getProperty("tolerance"));
+		float max_acceleration = Float.parseFloat( params.getProperty("max_acceleration"));
+		float max_velocity = Float.parseFloat( params.getProperty("max_velocity"));
+		map = new Map(map_width, map_length, tolerance, max_acceleration, max_velocity);
+		long random_seed = Integer.parseInt(params.getProperty("random_seed"));
+		if(random_seed != 0)
+			rand.setSeed(random_seed);
+
+		usingGUI = (Integer.parseInt(params.getProperty("useGUI")) == 1);
+		simulationDuration = Double.parseDouble(params.getProperty("simulation_duration"));
+
+		//Set up base map to add things to
+		String window_size[] = params.getProperty("window_size").split("x");
+		if(usingGUI)
+			RenderWindow.initializeUserInterface(Integer.parseInt(window_size[0]), Integer.parseInt(window_size[1]), this);
+
+
+
+		super.bucketbots = robots;
+		super.buckets = buckets;
+		super.letterStations = letterStations;
+		super.wordStations = wordStations;
+
+
+		bucketbotManager = new BotManager(buckets);
+		letterManager = new InveotryManager();
+		wordManager = new OrderManager();
+		//float map_width, float map_height, float map_tolerance, float max_acceleration, float max_velocity
+		//map = new Map(mapParam.get("map_width"), mapParam.get("map_height"),mapParam.get("map_tolerance"),mapParam.get("max_acceleration"),mapParam.get("max_velocity"));
+
+		//*** initialize layout
+		//spread letter stations evenly across on the left side
+		for(int i = 0; i < letterStations.length; i++ ) {
+			map.addLetterStation(letterStations[i]);
+		}
+
+		//spread word stations evenly across on the right side
+		for(int i = 0; i < wordStations.length; i++ ) {
+			map.addWordStation(wordStations[i]);
+		}
+
+		bucketbotManager.unusedBucketStorageLocations = unusedBucketStorageLocations;
+		bucketbotManager.usedBucketStorageLocations = usedBucketStorageLocations;
+
+		for(Bucket b : super.buckets) {
+			map.addBucket(b);
+		}
+		for(Bucketbot r: super.bucketbots) {
+			map.addRobot(r);
+		}
+
+
+		super.wordList = wordList;
+
+		//populate update list
+		updateables = new ArrayList<Updateable>();
+		for(Bucketbot r : super.bucketbots)
+			updateables.add((Updateable)r);
+		updateables.add((Updateable)map);
+		updateables.add((Updateable)bucketbotManager);
+		updateables.add((Updateable)wordManager);
+		updateables.add((Updateable)letterManager);
+		for(WordStation s : super.wordStations)
+			updateables.add((Updateable)s);
+		for(LetterStation s : super.letterStations)
+			updateables.add((Updateable)s);
+
+		//finish adding things to be rendered
+		if(usingGUI) {
+			RenderWindow.addAdditionalDetailRender(new WordListRender((WordListBase)super.wordList));
+
+			RenderWindow.addLineRender(new MapRender(map));
+
+			for(LetterStation s : super.letterStations)
+				RenderWindow.addSolidRender(new LetterStationRender((LetterStationBase)s));
+			for(WordStation s : super.wordStations)
+				RenderWindow.addSolidRender(new WordStationRender((WordStationBase)s));
+
+			for(Bucket b : super.buckets)
+				RenderWindow.addLineRender(new BucketRender((BucketBase)b));
+			for(Bucketbot r : super.bucketbots)
+				RenderWindow.addLineRender(new BucketbotRender((BucketbotBase)r));
+		}
+
+
+	}
+
 	public SimulationWorldSimple() {
 		super("alphabetsoup.config");
 		simulationWorldExample = this;
@@ -41,7 +144,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 		float letter_to_bucket_time = Float.parseFloat( params.getProperty("letter_to_bucket_time"));
 		float bucket_to_letter_time = Float.parseFloat( params.getProperty("bucket_to_letter_time"));
 		float word_completion_time = Float.parseFloat( params.getProperty("word_completion_time"));
-		float collision_penalty_time = Float.parseFloat( params.getProperty("collision_penalty_time"));
+		float collision_penalty_time = Float.parseFloat(params.getProperty("collision_penalty_time"));
 		usingGUI = (Integer.parseInt(params.getProperty("useGUI")) == 1);
 		String window_size[] = params.getProperty("window_size").split("x");
 		simulationDuration = Double.parseDouble(params.getProperty("simulation_duration"));
@@ -52,7 +155,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 
 		//Create classes, and add them to the map accordingly
 		for(int i = 0; i < bucketbots.length; i++)
-			bucketbots[i] = (Bucketbot) new Pod(bucketbot_size, bucket_pickup_setdown_time, map.getMaxAcceleration(), map.getMaxVelocity(), collision_penalty_time);
+			bucketbots[i] = (Bucketbot) new Bot(bucketbot_size, bucket_pickup_setdown_time, map.getMaxAcceleration(), map.getMaxVelocity(), collision_penalty_time);
 		
 		for(int i = 0; i < letterStations.length; i++)
 			letterStations[i] = (LetterStation) new LetterStationBase(
@@ -108,7 +211,8 @@ public class SimulationWorldSimple extends SimulationWorld {
 				RenderWindow.addLineRender(new BucketbotRender((BucketbotBase)r));
 		}
 	}
-	
+
+
 	/**Moves the LetterStations evenly across the left side, WordStations evenly across the right side,
 	 * and randomly distributes buckets and bucketbots. 
 	 */

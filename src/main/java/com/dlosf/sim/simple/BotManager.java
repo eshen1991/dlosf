@@ -16,8 +16,18 @@ import java.util.List;
  * @author Chris Hazard
  */
 public class BotManager implements Updateable {
+
+
 	protected LinkedHashSet<Bucket> usedBuckets = new LinkedHashSet<Bucket>();
 	protected LinkedHashSet<Bucket> unusedBuckets = new LinkedHashSet<Bucket>();
+
+	public LinkedHashSet<Bucket> getUnusedBuckets() {
+		return unusedBuckets;
+	}
+
+	public LinkedHashSet<Bucket> getUsedBuckets() {
+		return usedBuckets;
+	}
 	
 	public BotManager(Bucket[] buckets) {
 		for(Bucket b : buckets)
@@ -54,6 +64,15 @@ public class BotManager implements Updateable {
 	
 	protected List<Circle> unusedBucketStorageLocations = new ArrayList<Circle>();
 	protected HashMap<Bucket,Circle> pendingBucketStorageLocations = new HashMap<Bucket,Circle>();
+
+	public List<Circle> getUnusedBucketStorageLocations() {
+		return unusedBucketStorageLocations;
+	}
+
+	public HashMap<Bucket, Circle> getUsedBucketStorageLocations() {
+		return usedBucketStorageLocations;
+	}
+
 	protected HashMap<Bucket,Circle> usedBucketStorageLocations = new HashMap<Bucket,Circle>();
 	
 	/**Adds a new valid currently used location to store buckets on the map

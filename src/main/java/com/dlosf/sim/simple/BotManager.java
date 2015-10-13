@@ -13,7 +13,7 @@ import java.util.List;
 
 /**BucketbotGlobalResources implements a basic Bucketbot manager that uses basic queues of tasks
  * to dispense jobs to bucketbots.
- * @author Chris Hazard
+ *
  */
 public class BotManager implements Updateable {
 

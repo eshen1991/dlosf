@@ -15,7 +15,7 @@ import java.util.*;
 
 /**BucketbotDriver implements a functioning Bucketbot that can complete tasks,
  * but only evades other buckets and bucketbots by trying to go directly around.
- * @author Chris Hazard
+ *
  */
 public class Bot extends BucketbotBase {
 
@@ -231,7 +231,7 @@ public class Bot extends BucketbotBase {
 	
 	/**CollideableObject is used for sorting collideable objects
 	 * in order of direction (so they are put around in a circle)
-	 * @author Chris Hazard
+	 *
 	 */
 	private static class CollideableObject implements Comparator<CollideableObject> {
 		public CollideableObject(float s, float dist, float dir) {

@@ -12,12 +12,12 @@ import java.util.List;
  */
 public class JsonWordList {
 
-    public List<String> words = new ArrayList<String>();
-    public List<String> availableWords = new ArrayList<String>();
+    private List<String> words = new ArrayList<String>();
+    private List<String> availableWords = new ArrayList<String>();
 
-    protected String baseWords[];
-    protected List<LetterColor> baseColors;
-    protected HashMap<Character, Float> letterProbabilities;
+    private String baseWords[];
+    private List<LetterColor> baseColors;
+    private HashMap<Character, Float> letterProbabilities;
 
     public JsonWordList() {
     }

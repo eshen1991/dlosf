@@ -9,9 +9,9 @@ import alphabetsoup.framework.WordList;
 import alphabetsoup.framework.WordStation;
 
 
-/**Basic simple implementation of a WordOrderManager, which dispenses incoming words to Word
+/**Basic simple implementation of a OrderManager, which dispenses incoming words to Word
  * stations as they have space.
- * @author Chris Hazard
+ *
  */
 public class OrderManager implements Updateable {
 
@@ -27,7 +27,7 @@ public class OrderManager implements Updateable {
 	 */
 	public void update(double last_time, double cur_time) {
 		WordList wl = SimulationWorldSimple.getSimulationWorld().getWordList();
-		InveotryManager lm = ((InveotryManager)((SimulationWorldSimple) SimulationWorldSimple.getSimulationWorld()).letterManager);
+		LetterManager lm = ((LetterManager)((SimulationWorldSimple) SimulationWorldSimple.getSimulationWorld()).letterManager);
 		
 		//see if all done
 		if(wl.getAvailableWords().size() == 0)

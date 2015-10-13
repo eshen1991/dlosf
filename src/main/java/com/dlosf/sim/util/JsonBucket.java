@@ -3,26 +3,32 @@ package com.dlosf.sim.util;
 import alphabetsoup.framework.Bucket;
 import alphabetsoup.framework.Letter;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 /**
  * Created by eshen on 10/4/15.
  */
-public class JsonBucket {
-    private float x;
-    private float y;
-    private float radius;
+public class JsonBucket extends JsonWaypoint {
+
     private String letters;
     private int capacity;
 
     public JsonBucket() {
+        super();
     }
 
     public  JsonBucket(Bucket bucket) {
-        this.x = bucket.getX();
-        this.y = bucket.getY();
+        super(bucket.getX(), bucket.getY(),bucket.getRadius());
         this.capacity = bucket.getCapacity();
-
         Letter[] letters =  bucket.getLetters().toArray(new Letter[bucket.getLetters().size()]);
-        this.letters = SimulationWorldStaticInitializer.convertLettersToString(letters);
+        this.letters = SimulationWorldInitializer.convertLettersToString(letters);
+    }
+
+    public JsonBucket(float x, float y, float radius, String letters, int capacity) {
+        super(x, y, radius);
+        this.letters = letters;
+        this.capacity = capacity;
 
     }
 
@@ -32,30 +38,6 @@ public class JsonBucket {
 
     public void setCapacity(int capacity) {
         this.capacity = capacity;
-    }
-
-    public float getX() {
-        return x;
-    }
-
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    public float getY() {
-        return y;
-    }
-
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    public float getRadius() {
-        return radius;
-    }
-
-    public void setRadius(float radius) {
-        this.radius = radius;
     }
 
     public String getLetters() {

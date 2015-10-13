@@ -7,23 +7,24 @@ import alphabetsoup.base.*;
 import alphabetsoup.framework.*;
 import alphabetsoup.framework.Map;
 import alphabetsoup.userinterface.*;
+import com.dlosf.sim.util.SimulationWorldInitializer;
 
 import java.util.*;
 
 /**Example AlphabetSoup simulation file, which puts buckets in a grid, lays out bots randomly,
  * parameratizes everything based on "alphabetsoup.config", and starts everything running.
- * @author Chris Hazard
+ *
  */
 public class SimulationWorldSimple extends SimulationWorld {
 	
 	private double simulationDuration = 0.0;
-	public InveotryManager letterManager = null;
+	public LetterManager letterManager = null;
 	public Updateable wordManager = null;
 	public BotManager bucketbotManager = null;
 
-	private static SimulationWorldSimple simulationWorldExample;
+	private static SimulationWorldSimple simulationWorldSimple;
 	public static SimulationWorldSimple getSimulationWorld() {
-		return simulationWorldExample;
+		return simulationWorldSimple;
 	}
 
 
@@ -33,12 +34,11 @@ public class SimulationWorldSimple extends SimulationWorld {
 								 WordStation[] wordStations,
 								 WordList wordList,
 								 List<Circle> unusedBucketStorageLocations,
-								 LinkedHashSet<Bucket> unusedBucket,
 								 HashMap<Bucket,Circle> usedBucketStorageLocations,
 								 Properties params)
 	{
 		super();
-		simulationWorldExample = this;
+		simulationWorldSimple = this;
 
 		float map_width = Float.parseFloat(params.getProperty("map_width"));
 		float map_length = Float.parseFloat(params.getProperty("map_length"));
@@ -67,7 +67,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 
 
 		bucketbotManager = new BotManager(buckets);
-		letterManager = new InveotryManager();
+		letterManager = new LetterManager();
 		wordManager = new OrderManager();
 		//float map_width, float map_height, float map_tolerance, float max_acceleration, float max_velocity
 		//map = new Map(mapParam.get("map_width"), mapParam.get("map_height"),mapParam.get("map_tolerance"),mapParam.get("max_acceleration"),mapParam.get("max_velocity"));
@@ -86,6 +86,14 @@ public class SimulationWorldSimple extends SimulationWorld {
 		bucketbotManager.unusedBucketStorageLocations = unusedBucketStorageLocations;
 		bucketbotManager.usedBucketStorageLocations = usedBucketStorageLocations;
 
+/*
+		for(Bucket b : super.buckets) {
+			for(Letter l : b.getLetters())
+				bucketbotManager.lettersInBuckets.add(new BotManager.LetterBucketPair(l, b));
+		}
+*/
+
+
 		for(Bucket b : super.buckets) {
 			map.addBucket(b);
 		}
@@ -95,6 +103,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 
 
 		super.wordList = wordList;
+		letterColors = ((WordListBase)wordList).getBaseColors();
 
 		//populate update list
 		updateables = new ArrayList<Updateable>();
@@ -131,7 +140,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 
 	public SimulationWorldSimple() {
 		super("alphabetsoup.config");
-		simulationWorldExample = this;
+		simulationWorldSimple = this;
 
 		float bucketbot_size = Float.parseFloat(params.getProperty("bucketbot_size"));
 		float bucket_size = Float.parseFloat(params.getProperty("bucket_size"));
@@ -169,7 +178,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 			buckets[i] = (Bucket) new BucketBase(bucket_size, bucket_capacity);
 		
 		bucketbotManager	= new BotManager(buckets);
-		letterManager	= new InveotryManager();
+		letterManager	= new LetterManager();
 		wordManager		= new OrderManager();
 
 		initializeRandomLayout();
@@ -314,7 +323,23 @@ public class SimulationWorldSimple extends SimulationWorld {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		simulationWorld = new SimulationWorldSimple();
+		String initDir = System.getProperty("initDir");
+		System.out.println("init directory is " + initDir);
+
+		if (initDir!=null) {
+			simulationWorld = SimulationWorldInitializer.loadFromInitData(initDir);
+
+		}  else {
+
+			simulationWorld = new SimulationWorldSimple();
+			SimulationWorldInitializer.recordInitData(simulationWorldSimple, "initoutput");
+		}
+
+		if (simulationWorld == null) {
+			System.out.println("simulation initialization failed");
+			return;
+		}
+
 		if(simulationWorld.isUsingGUI())
 		{
 			RenderWindow.mainLoop(simulationWorld,

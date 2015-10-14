@@ -332,7 +332,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 		}  else {
 
 			simulationWorld = new SimulationWorldSimple();
-			SimulationWorldInitializer.recordInitData(simulationWorldSimple, "initoutput");
+			SimulationWorldInitializer.recordInitData(simulationWorldSimple, "simple-"+System.currentTimeMillis());
 		}
 
 		if (simulationWorld == null) {

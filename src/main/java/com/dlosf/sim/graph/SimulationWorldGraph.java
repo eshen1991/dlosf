@@ -10,6 +10,7 @@ import alphabetsoup.waypointgraph.BucketbotDriver;
 import alphabetsoup.waypointgraph.GenerateWaypointGraph;
 import alphabetsoup.waypointgraph.Waypoint;
 import alphabetsoup.waypointgraph.WaypointGraph;
+import com.dlosf.sim.util.SimulationWorldInitializer;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -54,6 +55,8 @@ public class SimulationWorldGraph extends SimulationWorld {
 		float max_acceleration = Float.parseFloat( params.getProperty("max_acceleration"));
 		float max_velocity = Float.parseFloat( params.getProperty("max_velocity"));
 		map = new Map(map_width, map_length, tolerance, max_acceleration, max_velocity);
+		this.waypointGraph = waypointGraph;
+		usingGUI = (Integer.parseInt(params.getProperty("useGUI")) == 1);
 
 		simulationDuration = Double.parseDouble(params.getProperty("simulation_duration"));
 
@@ -82,6 +85,22 @@ public class SimulationWorldGraph extends SimulationWorld {
 
 		bucketbotManager.unusedBucketStorageLocations = unusedBucketStorageLocations;
 		bucketbotManager.usedBucketStorageLocations = usedBucketStorageLocations;
+
+		//layout on the map
+		for (LetterStation ls : letterStations) {
+			map.addLetterStation(ls);
+		}
+
+		for (WordStation ws : wordStations) {
+			map.addWordStation(ws);
+		}
+
+		for(Bucket b : super.buckets) {
+			map.addBucket(b);
+		}
+		for(Bucketbot r: super.bucketbots) {
+			map.addRobot(r);
+		}
 
 
 
@@ -230,7 +249,23 @@ public class SimulationWorldGraph extends SimulationWorld {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		simulationWorld = new SimulationWorldGraph();
+		String initDir = System.getProperty("initDir");
+		System.out.println("init directory is " + initDir);
+
+		if (initDir!=null) {
+			simulationWorld = SimulationWorldInitializer.loadGraphFromInitData(initDir);
+
+		}  else {
+
+			simulationWorld = new SimulationWorldGraph();
+			SimulationWorldInitializer.recordInitData(simulationWorldGraph, "graph-"+System.currentTimeMillis());
+		}
+
+		if (simulationWorld == null) {
+			System.out.println("simulation initialization failed");
+			return;
+		}
+
 		if(simulationWorld.isUsingGUI())
 		{
 			RenderWindow.mainLoop(simulationWorld,

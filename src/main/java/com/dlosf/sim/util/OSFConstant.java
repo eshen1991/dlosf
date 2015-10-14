@@ -11,8 +11,9 @@ public class OSFConstant {
     public static final String JSON_FILE_PICKSTATION = "pickStation.json";
     public static final String JSON_FILE_PARAMS = "params.json";
     public static final String JSON_FILE_UNUSED_LOCATIONS = "unusedBucketStorageLocations.json";
-    //public static final String JSON_FILE_USED_LOCATIONS = "usedBucketStorageLocations.json";
+    public static final String JSON_FILE_WAYPOINT = "waypoint.json";
     public static final String JSON_FILE_WORDLIST = "wordlist.json";
+
 
 
 

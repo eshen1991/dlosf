@@ -13,9 +13,7 @@ import alphabetsoup.waypointgraph.Waypoint;
 import alphabetsoup.waypointgraph.WaypointGraph;
 import com.dlosf.sim.graph.SimulationWorldGraph;
 import com.dlosf.sim.simple.Bot;
-import com.dlosf.sim.simple.BotManager;
 import com.dlosf.sim.simple.SimulationWorldSimple;
-import org.codehaus.jackson.JsonNode;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 import org.codehaus.jackson.type.TypeReference;
@@ -139,23 +137,26 @@ public class SimulationWorldInitializer {
 			bots = new Bucketbot[jsonBots.size()];
 			for (int i=0;i<jsonBots.size();i++) {
 				JsonBot jBot = jsonBots.get(i);
-				bots[i] = new BucketbotDriver(jBot.getRadius(),jBot.getBucketPickupSetdownTime(), jBot.getMaxAcceleration(), jBot.getMaxVelocity(),jBot.getCollisionPenaltyTime());
-
+				BucketbotDriver b  = new BucketbotDriver(jBot.getRadius(),jBot.getBucketPickupSetdownTime(), jBot.getMaxAcceleration(), jBot.getMaxVelocity(),jBot.getCollisionPenaltyTime());
+				b.setInitialPosition(jBot.getX(),jBot.getY());
+				bots[i] = b;
 			}
 
 			List<JsonBucket> jsonBuckets =  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_BUCKETS), new TypeReference<List<JsonBucket>>(){});
 			List<JsonLetterStation> jsonLetterStations = mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_INVENTORYSTATION),new TypeReference<List<JsonLetterStation>>(){});
 			List<JsonWordStation> jsonWordStations =  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_PICKSTATION),new TypeReference<List<JsonWordStation>>(){});
 			List<JsonWaypoint> jsonUnusedLocations =  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_UNUSED_LOCATIONS),new TypeReference<List<JsonWaypoint>>(){});
+			List<JsonWaypoint> jsonRestWaypoints =  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_WAYPOINT),new TypeReference<List<JsonWaypoint>>(){});
 			Map<JsonWaypoint, Waypoint> waypointMap = new HashMap<JsonWaypoint, Waypoint>();
 			Map<String, JsonWaypoint>   jsonWaypointMap  = new HashMap<String, JsonWaypoint>();
 
-			//layout of letterstaions, wordstations, and buckets through waypoint
+			//*** layout of letterstaions, wordstations, buckets, unusedStorage locations, and rest of waypoints
+			//layout buckets
 			buckets = new Bucket[jsonBuckets.size()];
 			for (int i=0; i<jsonBuckets.size(); i++) {
 				JsonBucket jb = jsonBuckets.get(i);
 				BucketBase b = new BucketBase(jb.getRadius(), jb.getCapacity());
-				for (Letter l: converStringToLetters(jb.getLetters())) {
+				for (Letter l: JsonHelper.converStringToLetters(jb.getLetters())) {
 					b.addLetter(l);
 				}
 				b.setInitialPosition(jb.getX(), jb.getY());
@@ -171,7 +172,7 @@ public class SimulationWorldInitializer {
 
 			}
 
-
+			//layout letter stations
 			letterStations = new LetterStation[jsonLetterStations.size()];
 			for (int i=0;i<letterStations.length;i++) {
 				JsonLetterStation jls = jsonLetterStations.get(i);
@@ -188,7 +189,7 @@ public class SimulationWorldInitializer {
 
 			}
 
-
+			//layout wordstations
 			wordStations = new WordStation[jsonWordStations.size()];
 			for (int i=0;i<jsonWordStations.size();i++) {
 				JsonWordStation jws = jsonWordStations.get(i);
@@ -204,14 +205,23 @@ public class SimulationWorldInitializer {
 
 			}
 
+			//layout unused bucket storage locations
+			unusedBucketStorageLocations = new ArrayList<Waypoint>();
 			for (JsonWaypoint sl : jsonUnusedLocations) {
-				//float x, float y, boolean bucket_storage_location
+
 				Waypoint waypoint = new Waypoint(sl.getX(), sl.getY(), true);
 				unusedBucketStorageLocations.add(waypoint);
 				waypointMap.put(sl, waypoint);
 				jsonWaypointMap.put(sl.getUuid(), sl);
 
 
+			}
+
+			//layout rest of waypoints
+			for (JsonWaypoint jwp : jsonRestWaypoints) {
+				Waypoint waypoint = new Waypoint(jwp.getX(), jwp.getY(), false);
+				waypointMap.put(jwp, waypoint);
+				jsonWaypointMap.put(jwp.getUuid(), jwp);
 			}
 
 
@@ -229,18 +239,9 @@ public class SimulationWorldInitializer {
 				waypointGraph.addWaypoint(p);
 			}
 
-
-
-
-
-
-
-
-
-
-
+			//generate word list
 			JsonWordList jsonWordList =  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_WORDLIST), JsonWordList.class);
-			wordList = convertToWordList(jsonWordList);
+			wordList = JsonHelper.convertToWordList(jsonWordList);
 
 
 
@@ -255,9 +256,6 @@ public class SimulationWorldInitializer {
 	}
 
 
-	private static Waypoint converToWaypoint(JsonWaypoint jsonWaypoint) {
-		return null;
-	}
 
 	public static SimulationWorldSimple loadFromInitData(String dir) {
 		SimulationWorldSimple simulationWorld = null;
@@ -290,7 +288,6 @@ public class SimulationWorldInitializer {
 
 
 		try {
-			//bots = mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_BOTS), Bot[].class);
 			List<JsonBot> jsonBots =   mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_BOTS), new TypeReference<List<JsonBot>>(){});
 			bots = new Bucketbot[jsonBots.size()];
 			for (int i=0;i<jsonBots.size();i++) {
@@ -305,7 +302,7 @@ public class SimulationWorldInitializer {
 			buckets = new Bucket[jsonBuckets.length];
 			for (int i=0; i<jsonBuckets.length; i++) {
 				BucketBase b = new BucketBase(jsonBuckets[i].getRadius(), jsonBuckets[i].getCapacity());
-				for (Letter l: converStringToLetters(jsonBuckets[i].getLetters())) {
+				for (Letter l: JsonHelper.converStringToLetters(jsonBuckets[i].getLetters())) {
 					b.addLetter(l);
 				}
 				b.setInitialPosition(jsonBuckets[i].getX(), jsonBuckets[i].getY());
@@ -315,32 +312,18 @@ public class SimulationWorldInitializer {
 			}
 
 			List<JsonLetterStation> jsonLetterStations = mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_INVENTORYSTATION),new TypeReference<List<JsonLetterStation>>(){});
-			letterStations = convertToInvStation(jsonLetterStations).toArray(new LetterStation[jsonLetterStations.size()]);
+			letterStations = JsonHelper.convertToInvStation(jsonLetterStations).toArray(new LetterStation[jsonLetterStations.size()]);
 
 			List<JsonWordStation> jsonWordStations =  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_PICKSTATION),new TypeReference<List<JsonWordStation>>(){});
-			wordStations =  convertToWordStation(jsonWordStations).toArray(new WordStation[jsonWordStations.size()]);
+			wordStations =  JsonHelper.convertToWordStation(jsonWordStations).toArray(new WordStation[jsonWordStations.size()]);
 
 			params = mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_PARAMS), Properties.class);
 
-			//unusedBucketStorageLocations = mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_UNUSED_LOCATIONS),new TypeReference<List<Circle>>(){});
 			List<JsonWaypoint> jsonSls=  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_UNUSED_LOCATIONS),new TypeReference<List<JsonWaypoint>>(){});
 			unusedBucketStorageLocations = new ArrayList<Circle>();
 			for (JsonWaypoint jsl : jsonSls) {
 				unusedBucketStorageLocations.add(new Circle(0.0f, jsl.getX(), jsl.getY()));
 			}
-
-		/*	List<JsonBucketCirclePair> pairs = mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_USED_LOCATIONS),new TypeReference<List<JsonBucketCirclePair>>(){});
-			usedBucketStorageLocations = new HashMap<Bucket, Circle>();
-			for (JsonBucketCirclePair p: pairs) {
-				usedBucketStorageLocations.put(convertToBucket(p.getBucket()), p.getCircle());
-
-
-
-			}
-
-			Circle c = new Circle(0.0f, b.getX(), b.getY());
-		usedBucketStorageLocations.put(b, c);
-*/
 
 			for (Bucket b: buckets) {
 				usedBucketStorageLocations.put(b, new Circle(0.0f, b.getX(), b.getY()));
@@ -349,7 +332,7 @@ public class SimulationWorldInitializer {
 
 
 			JsonWordList jsonWordList =  mapper.readValue(new File(outputDir, OSFConstant.JSON_FILE_WORDLIST), JsonWordList.class);
-			wordList = convertToWordList(jsonWordList);
+			wordList = JsonHelper.convertToWordList(jsonWordList);
 
 
 
@@ -383,6 +366,7 @@ public class SimulationWorldInitializer {
 			Set<Waypoint> waypoints = graphSim.waypointGraph.getWaypoints();
 			Set<Waypoint> usedWaypoints = new HashSet<Waypoint>();
 			HashMap<Waypoint, JsonWaypoint> waypointJsonObjMap = new HashMap<Waypoint, JsonWaypoint>();
+
 
 			List<JsonWaypoint> unusedBucketStorageLocations = new LinkedList<JsonWaypoint>();
 			List<JsonBucket> jsonBuckets = new ArrayList<JsonBucket>();
@@ -420,17 +404,24 @@ public class SimulationWorldInitializer {
 
 			}
 
-			waypoints.removeAll(usedWaypoints);
 
-			if (!waypoints.isEmpty()) {
-				for (Waypoint p : waypoints) {
-					JsonWaypoint unusedLocation = new JsonWaypoint(p.getX(), p.getY(),p.getRadius());
-					waypointJsonObjMap.put(p, unusedLocation);
-					unusedBucketStorageLocations.add(unusedLocation);
-				}
+			for (Waypoint p : graphSim.bucketbotManager.getUnusedBucketStorageLocations()) {
+
+				JsonWaypoint unusedLocation = new JsonWaypoint(p.getX(), p.getY(), p.getRadius());
+				waypointJsonObjMap.put(p, unusedLocation);
+				usedWaypoints.add(p);
+				unusedBucketStorageLocations.add(unusedLocation);
+
 			}
 
-
+			List<JsonWaypoint> waypointList = new ArrayList<JsonWaypoint>();
+			for (Waypoint p : waypoints) {
+				if(!usedWaypoints.contains(p)) {
+					JsonWaypoint jp = new JsonWaypoint(p.getX(), p.getY(), p.getRadius());
+					waypointJsonObjMap.put(p, jp);
+					waypointList.add(jp);
+				}
+			}
 			//populate paths for all the waypoints
 			for (Waypoint p : waypointJsonObjMap.keySet()) {
 				JsonWaypoint jsonWaypoint = waypointJsonObjMap.get(p);
@@ -461,9 +452,10 @@ public class SimulationWorldInitializer {
 
 
 			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_UNUSED_LOCATIONS), unusedBucketStorageLocations);
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_WAYPOINT), waypointList);
 
 			WordListBase wl = (WordListBase)graphSim.getWordList();
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_WORDLIST), convertToJsonWordList(wl));
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_WORDLIST), JsonHelper.convertToJsonWordList(wl));
 
 
 
@@ -496,11 +488,11 @@ public class SimulationWorldInitializer {
 				jsonBots.add(jsonBot);
 			}
 
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_BUCKETS), convertToJsonBucket(simpleSim.getBuckets()));
-			//mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_BOTS), simpleSim.getRobots());
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_BUCKETS), JsonHelper.convertToJsonBucket(simpleSim.getBuckets()));
+
 			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_BOTS), jsonBots);
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_INVENTORYSTATION), convertToJsonInvStation(Arrays.asList(simpleSim.getLetterStations())));
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_PICKSTATION), convertToJsonWordStation(Arrays.asList(simpleSim.getWordStations())));
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_INVENTORYSTATION), JsonHelper.convertToJsonInvStation(Arrays.asList(simpleSim.getLetterStations())));
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_PICKSTATION), JsonHelper.convertToJsonWordStation(Arrays.asList(simpleSim.getWordStations())));
 			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, "params.json"), simpleSim.getParams());
 
 			List<Circle> unusedBucketStorageLocations = simpleSim.bucketbotManager.getUnusedBucketStorageLocations();
@@ -509,11 +501,10 @@ public class SimulationWorldInitializer {
 				jsonSls.add(new JsonWaypoint(c.getX(),c.getY(),c.getRadius()));
 			}
 
-			//mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_UNUSED_LOCATIONS), unusedBucketStorageLocations);
 			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_UNUSED_LOCATIONS), jsonSls);
 
 			WordListBase wl = (WordListBase) simpleSim.getWordList();
-			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_WORDLIST), convertToJsonWordList(wl));
+			mapper.writerWithDefaultPrettyPrinter().writeValue(new File(outputDir, OSFConstant.JSON_FILE_WORDLIST), JsonHelper.convertToJsonWordList(wl));
 
 
 
@@ -530,14 +521,16 @@ public class SimulationWorldInitializer {
 	 */
 	public static void main(String[] args) {
 
-		//generateInitData(SimWorldType.GRAPH, "graphoutput");
-		generateInitData(SimWorldType.SIMPLE, "initoutput");
+		//generateInitData(SimWorldType.GRAPH, "debuggraphoutput");
+
+
+		//generateInitData(SimWorldType.SIMPLE, "initoutput");
 		//loadFromInitData("initouput");
 
-	/*	SimulationWorld simulationWorld1 = new SimulationWorldSimple();
-		recordInitData((SimulationWorldSimple)simulationWorld1, "initoutput");*/
+		SimulationWorld simulationWorld1 = new SimulationWorldGraph();
+		recordInitData((SimulationWorldGraph)simulationWorld1, "initgraphoutput");
 
-		//SimulationWorld simulationWorld12 = loadFromInitData("initoutput");
+		//SimulationWorld simulationWorld12 = loadGraphFromInitData("initgraphoutput");
 
 
 
@@ -547,275 +540,7 @@ public class SimulationWorldInitializer {
 
 	}
 
-	public static String convertLettersToString(Letter[] letters) {
 
 
 
-		StringBuffer buf = new StringBuffer();
-		for (Letter l: letters) {
-			buf.append(l.toString());
-			buf.append("#");
-		}
-
-		return buf.toString();
-
-	}
-
-	public static List<Letter> converStringToLetters(String str) {
-		List<Letter> letters = new ArrayList<Letter>();
-
-		String[] charColorPairs = str.split("#");
-		for (String pair: charColorPairs) {
-			 Letter l = convertCCpair(pair);
-			if (l!=null) {
-				letters.add(l);
-			}
-		}
-		return letters;
-
-	}
-
-	private static Letter convertCCpair(String str) {
-		int i = str.indexOf('(');
-		int j = str.indexOf(')');
-		int colorId = 0;
-		try {
-			colorId =  Integer.parseInt(str.substring(i+1,j));
-		} catch (NumberFormatException e) {
-			return null;
-		}
-		return new Letter(str.charAt(0), colorId);
-
-	}
-
-	public static List<JsonLetterStation> convertToJsonInvStation(List<LetterStation> invStation) {
-		List<JsonLetterStation> jsonLetterStations = new ArrayList<JsonLetterStation>();
-		for (LetterStation s: invStation) {
-			JsonLetterStation jsonStation = new JsonLetterStation();
-			jsonStation.setBundleSize(s.getBundleSize());
-			jsonStation.setCapacity(s.getCapacity());
-			jsonStation.setLetterToBucketTime(s.getLetterToBucketTime());
-			jsonStation.setX(s.getX());
-			jsonStation.setY(s.getY());
-			jsonStation.setRadius(s.getRadius());
-			jsonLetterStations.add(jsonStation);
-
-		}
-		return jsonLetterStations;
-	}
-
-	public static List<LetterStation> convertToInvStation(List<JsonLetterStation> jsonStations) {
-		List<LetterStation> stations = new ArrayList<LetterStation>();
-		for (JsonLetterStation jsonStation: jsonStations) {
-
-			LetterStationBase station = new LetterStationBase(jsonStation.getRadius(),jsonStation.getLetterToBucketTime(), jsonStation.getBundleSize(),jsonStation.getCapacity());
-			station.setInitialPosition(jsonStation.getX(), jsonStation.getY());
-			stations.add(station);
-		}
-
-		return stations;
-	}
-
-
-	public static List<JsonWordStation> convertToJsonWordStation(List<WordStation> wordStation) {
-		List<JsonWordStation> jsonWordStations = new ArrayList<JsonWordStation>();
-		for (WordStation s: wordStation) {
-			JsonWordStation jsonStation = new JsonWordStation();
-			jsonStation.setCapacity(s.getCapacity());
-			jsonStation.setBucketToLetterTime(s.getBucketToLetterTime());
-			jsonStation.setWordCompletionTime(s.getWordCompletionTime());
-			jsonStation.setX(s.getX());
-			jsonStation.setY(s.getY());
-			jsonStation.setRadius(s.getRadius());
-			jsonWordStations.add(jsonStation);
-
-		}
-		return jsonWordStations;
-	}
-
-	public static List<WordStation> convertToWordStation(List<JsonWordStation> jsonStations) {
-		List<WordStation> stations = new ArrayList<WordStation>();
-		for (JsonWordStation jsonStation: jsonStations) {
-
-			WordStationBase station = new WordStationBase(jsonStation.getRadius(),jsonStation.getBucketToLetterTime(),jsonStation.getWordCompletionTime(),jsonStation.getCapacity());
-			station.setInitialPosition(jsonStation.getX(), jsonStation.getY());
-			stations.add(station);
-		}
-
-		return stations;
-	}
-
-	public static List<JsonBucket> convertToJsonBucket(Bucket[] buckets) {
-		List<JsonBucket> jsonBuckets = new ArrayList<JsonBucket>();
-		for (Bucket bucket: buckets) {
-			jsonBuckets.add(new JsonBucket(bucket));
-		}
-
-		return jsonBuckets;
-
-	}
-
-	public static Bucket convertToBucket(JsonBucket jsonBucket) {
-		BucketBase b = new BucketBase(jsonBucket.getRadius(), jsonBucket.getCapacity());
-		for (Letter l : converStringToLetters(jsonBucket.getLetters())) {
-			b.addLetter(l);
-		}
-		b.setInitialPosition(jsonBucket.getX(), jsonBucket.getY());
-
-		return b;
-
-	}
-
-
-
-	public static List<String> convertWords(List<Word> words) {
-		List<String> simpleWords = new ArrayList<String>();
-		for (Word w: words) {
-			simpleWords.add(convertLettersToString(w.getOriginalLetters()));
-
-		}
-
-		return simpleWords;
-
-
-	}
-
-	//public static Word convertStringToWord()
-
-	public static JsonWordList convertToJsonWordList(WordListBase wordList) {
-		JsonWordList jsonWord = new JsonWordList();
-		jsonWord.setAvailableWords(convertWords(wordList.getAvailableWords()));
-		jsonWord.setBaseColors(wordList.getBaseColors());
-		jsonWord.setBaseWords(wordList.getBaseWords());
-		jsonWord.setWords(convertWords(wordList.getWords()));
-		jsonWord.setLetterProbabilities(wordList.getLetterProbabilities());
-		return jsonWord;
-	}
-
-	public static WordList convertToWordList(JsonWordList jsonWordList) {
-
-		WordListBase wordList = new WordListBase();
-
-		List<Word> words = new ArrayList<Word>();
-		for (String s: jsonWordList.getAvailableWords()){
-			List<Letter>  letters = converStringToLetters(s) ;
-			Word w = new Word(letters.toArray(new Letter[letters.size()]));
-			words.add(w);
-		}
-		wordList.setAvailableWords(words);
-
-		words = new ArrayList<Word>();
-		for (String s: jsonWordList.getWords()){
-			List<Letter>  letters = converStringToLetters(s) ;
-			Word w = new Word(letters.toArray(new Letter[letters.size()]));
-			words.add(w);
-		}
-		wordList.setWords(words);
-
-
-
-
-		wordList.setBaseWords(jsonWordList.getBaseWords());
-		wordList.setBaseColors(jsonWordList.getBaseColors());
-		wordList.setLetterProbabilities(jsonWordList.getLetterProbabilities());
-
-		return wordList;
-
-	}
-
-
-/*	public static void generateWaypointGraph(List<JsonBucket> buckets, WaypointGraph waypointGraph) {
-
-		//create all the waypoint nodes for the grid
-		float init_y = buckets.get(0).getY();
-
-		List<List<JsonBucket>> bucketGrids = new ArrayList<List<JsonBucket>>();
-		List<JsonBucket> rowBuckets = new ArrayList<JsonBucket>();
-		for (JsonBucket b : buckets) {  //works because buckets already sorted
-			if (b.getY() != init_y) {
-				init_y = b.getY();
-				bucketGrids.add(rowBuckets);
-				rowBuckets = new ArrayList<JsonBucket>();
-			} else {
-				rowBuckets.add(b);
-			}
-
-		}
-
-		int row = bucketGrids.size();    //height_count
-		int col = bucketGrids.get(0).size();   //width_count
-		Waypoint[][] grid = new Waypoint[row][col];
-
-		int bucket_block_length = 5;
-
-		for(int i = 0; i < col; i++) {
-			for(int j = 0; j < row; j++) {
-
-				waypointGraph.addWaypoint(grid[i][j]);
-
-				//connect horizontally
-				if(j > 0) { //don't connect if first node
-					//connect based on the row
-					switch(i % 10) {
-						case 0:	case 4:
-							grid[i][j].addPath(grid[i][j-1]);	break;
-						case 1:	case 7:
-							grid[i][j-1].addPath(grid[i][j]);	break;
-						default:
-							grid[i][j].addBidirectionalPath(grid[i][j-1]);
-							//make sure it's not on the edge, and leave gaps
-							*//*if(j > 1 && j < col - 2
-									&& j % bucket_block_length != 0) {
-								grid[i][j].setBucketStorageLocation();
-								bucket_storage_locations.put(grid[i][j], null);
-							}*//*
-							break;
-					}
-
-
-				}
-
-				//connect vertically
-				if(i > 0) { //don't connect if first node
-					//grid[i][j].addBidirectionalPath(grid[i-1][j]);
-
-					if(j == 0)
-						grid[i-1][j].addPath(grid[i][j]);
-					else if(j == 1)
-						grid[i][j].addPath(grid[i-1][j]);
-					else if(j == col - 2)
-						grid[i-1][j].addPath(grid[i][j]);
-					else if(j == col - 1)
-						grid[i][j].addPath(grid[i-1][j]);
-					else { //need to check if open isle
-						int column_remainder = j % (2 * bucket_block_length);
-						if(column_remainder == 0)
-							grid[i][j].addPath(grid[i-1][j]);
-						else if(column_remainder == bucket_block_length)
-							grid[i-1][j].addPath(grid[i][j]);
-						else
-							grid[i][j].addBidirectionalPath(grid[i-1][j]);
-					}
-
-				}
-			}
-		}
-
-		//put buckets on storage locations
-		ArrayList<Waypoint> storage_locations = new ArrayList<Waypoint>();
-		storage_locations.addAll(bucket_storage_locations.keySet());
-		for(int i = 0; i < sw.buckets.length; i++) {
-			Bucket b = sw.buckets[i];
-			Waypoint w = storage_locations.get(i);
-
-			((Circle)b).setInitialPosition(w.getX(), w.getY());
-			circles.add((Circle)b);
-
-			waypointGraph.bucketSetdown(b, w);
-			bucket_storage_locations.put(w, b);
-		}
-
-
-
-	}*/
 }

@@ -22,7 +22,7 @@ public class JsonBucket extends JsonWaypoint {
         super(bucket.getX(), bucket.getY(),bucket.getRadius());
         this.capacity = bucket.getCapacity();
         Letter[] letters =  bucket.getLetters().toArray(new Letter[bucket.getLetters().size()]);
-        this.letters = SimulationWorldInitializer.convertLettersToString(letters);
+        this.letters = JsonHelper.convertLettersToString(letters);
     }
 
     public JsonBucket(float x, float y, float radius, String letters, int capacity) {

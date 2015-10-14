@@ -347,4 +347,11 @@ public class BotManager implements alphabetsoup.waypointgraph.BucketbotManager, 
 		return false;
 	}
 
+	public List<Waypoint> getUnusedBucketStorageLocations() {
+		return unusedBucketStorageLocations;
+	}
+
+	public void setUnusedBucketStorageLocations(List<Waypoint> unusedBucketStorageLocations) {
+		this.unusedBucketStorageLocations = unusedBucketStorageLocations;
+	}
 }

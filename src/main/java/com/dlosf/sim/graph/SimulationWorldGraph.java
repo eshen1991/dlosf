@@ -268,9 +268,10 @@ public class SimulationWorldGraph extends SimulationWorld {
 
 		if(simulationWorld.isUsingGUI())
 		{
-			RenderWindow.mainLoop(simulationWorld,
+			/*RenderWindow.mainLoop(simulationWorld,
 					((SimulationWorldGraph) simulationWorld).simulationDuration);
-			RenderWindow.destroyUserInterface();
+			RenderWindow.destroyUserInterface();*/
+			RenderWindow.renderInitData(simulationWorld, ((SimulationWorldGraph) simulationWorld).simulationDuration);
 		}
 		else
 			simulationWorld.update( ((SimulationWorldGraph)simulationWorld).simulationDuration);

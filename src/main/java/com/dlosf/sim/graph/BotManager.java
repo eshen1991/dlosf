@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 
-/**BucketbotGlobalResources implements a basic Bucketbot manager that uses basic queues of tasks
+/**BotGlobalResource implements a basic Bucketbot manager that uses basic queues of tasks
  * to dispense jobs to bucketbots.
  *
  */

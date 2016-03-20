@@ -89,7 +89,7 @@ public class SimulationWorldSimple extends SimulationWorld {
 /*
 		for(Bucket b : super.buckets) {
 			for(Letter l : b.getLetters())
-				bucketbotManager.lettersInBuckets.add(new BotManager.LetterBucketPair(l, b));
+				bucketbotGlobalResource.lettersInBuckets.add(new BotGlobalResource.LetterBucketPair(l, b));
 		}
 */
 
@@ -318,7 +318,11 @@ public class SimulationWorldSimple extends SimulationWorld {
 		for(Bucket b : buckets)			map.addBucket(b);
 		for(Bucketbot r: bucketbots)	map.addRobot(r);
 	}
-	
+
+	public double getSimulationDuration() {
+		return simulationDuration;
+	}
+
 	/**Launches the Alphabet Soup simulation without user interface.
 	 * @param args
 	 */

@@ -15,7 +15,7 @@ public class JsonWordList {
     private List<String> words = new ArrayList<String>();
     private List<String> availableWords = new ArrayList<String>();
 
-    private String baseWords[];
+
     private List<LetterColor> baseColors;
     private HashMap<Character, Float> letterProbabilities;
 
@@ -38,13 +38,7 @@ public class JsonWordList {
         this.availableWords = availableWords;
     }
 
-    public String[] getBaseWords() {
-        return baseWords;
-    }
 
-    public void setBaseWords(String[] baseWords) {
-        this.baseWords = baseWords;
-    }
 
     public List<LetterColor> getBaseColors() {
         return baseColors;

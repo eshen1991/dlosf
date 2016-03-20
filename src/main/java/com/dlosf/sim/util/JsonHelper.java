@@ -152,7 +152,6 @@ public class JsonHelper {
         JsonWordList jsonWord = new JsonWordList();
         jsonWord.setAvailableWords(convertWords(wordList.getAvailableWords()));
         jsonWord.setBaseColors(wordList.getBaseColors());
-        jsonWord.setBaseWords(wordList.getBaseWords());
         jsonWord.setWords(convertWords(wordList.getWords()));
         jsonWord.setLetterProbabilities(wordList.getLetterProbabilities());
         return jsonWord;
@@ -179,9 +178,7 @@ public class JsonHelper {
         wordList.setWords(words);
 
 
-
-
-        wordList.setBaseWords(jsonWordList.getBaseWords());
+        wordList.setBaseWords(SimulationWorld.getBaseWords());
         wordList.setBaseColors(jsonWordList.getBaseColors());
         wordList.setLetterProbabilities(jsonWordList.getLetterProbabilities());
 

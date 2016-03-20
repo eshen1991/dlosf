@@ -51,6 +51,8 @@ public class RenderWindow {
 	
 	static private List<Renderable> solidRenders = new ArrayList<Renderable>();
 	static private List<Renderable> lineRenders = new ArrayList<Renderable>();
+
+	public static final String DEFAULT_TITLE = "OFSG";
 	/**Adds a Renderable that will always be rendered in map space 
 	 * @param r Renderable to always render
 	 */
@@ -91,12 +93,27 @@ public class RenderWindow {
 
 	static public boolean runSim = false;
 
+	static public void resetRenderWindow() {
+		runSim = false;
+		exitRequested = false;
+		additionalDetailRenders = new ArrayList<Renderable>();
+		lineRenders = new ArrayList<Renderable>();
+		solidRenders = new ArrayList<Renderable>();
+		mouseOver = new ArrayList<Renderable>();
+		keepMouseOver = false;
+		paused = false;
+		renderReport = false;
+		simulationWorld = null;
+
+	}
+
 	static public void renderInitData(SimulationWorld sw, double elapsed_time) {
 		if (sw == null) {
 			System.out.println("user interface hasn't been initialized");
 			return;
 		}
 
+		simulationWorld = sw;
 
 		while(!exitRequested && !Display.isCloseRequested() && !runSim) {
 			readKeyboard();
@@ -122,7 +139,7 @@ public class RenderWindow {
 	{
 		try {
 			Display.setDisplayMode(new DisplayMode(windowWidth = width, windowHeight = height));
-			Display.setTitle("Alphabet Soup");
+			Display.setTitle(DEFAULT_TITLE + " " + sw.getClass().getSimpleName());
 			Display.create();
 			//Display.setIcon();
 			//Display.setFullscreen(true);

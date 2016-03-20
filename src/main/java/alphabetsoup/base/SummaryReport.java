@@ -5,6 +5,7 @@ package alphabetsoup.base;
 
 import alphabetsoup.framework.*;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.text.DecimalFormat;
@@ -104,12 +105,18 @@ public class SummaryReport {
 	static public void generateReport(SimulationWorld sw) {
 		FileWriter outfile;
 		PrintWriter outf;
+		String filename = null;
 		try {
-			outfile = new FileWriter("AlphabetSoupReport.txt");
+			filename = sw.getClass().getSimpleName() + "_" + System.currentTimeMillis();
+			File reportdir = new File("report");
+			if (!reportdir.exists()) {
+				reportdir.mkdir();
+			}
+			outfile = new FileWriter(new File(reportdir, filename));
 			outf = new PrintWriter(outfile);
 		}
 		catch (Throwable e) {
-			System.out.println("Could not open file AlphabetSoup.txt");
+			System.out.println("Could not open file " + filename );
 			return;
 		}
 		

@@ -23,6 +23,11 @@ public class SimulationWorld {
 	public WordStation wordStations[] = null;
 	public Bucket buckets[] = null;
 	public WordList wordList = null;
+	private static String[] baseWords;
+
+	static {
+		baseWords = getBaseWords("aspell_dictionary.txt");
+	}
 
 	public Map map = null;
 	
@@ -46,7 +51,7 @@ public class SimulationWorld {
 
 	protected Properties params;	//parameters of the simulation
 	
-	protected static SimulationWorld simulationWorld;
+	public static SimulationWorld simulationWorld;
 	public static SimulationWorld getSimulationWorld() {
 		return simulationWorld;
 	}
@@ -326,5 +331,29 @@ public class SimulationWorld {
 	 */
 	public double getStatisticsTime() {
 		return statisticsTime;
+	}
+
+	public static String[] getBaseWords() {
+		return baseWords;
+	}
+
+	private static String[] getBaseWords(String filename) {
+
+		//open file to get words
+		String content;
+		try {
+			FileInputStream fis = new FileInputStream(filename);
+			int x= fis.available();
+			byte b[]= new byte[x];
+			fis.read(b);
+			content = new String(b);
+		}
+		catch (Throwable e) {
+			System.out.println("Could not open file " + filename);
+			return null;
+		}
+
+		//store info to build more new words
+		return content.split("(\r\n)|\n|\r");	//split on any newline combo
 	}
 }

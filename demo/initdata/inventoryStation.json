@@ -1,0 +1,34 @@
+[ {
+  "x" : 5.0,
+  "y" : 225.0,
+  "radius" : 5.0,
+  "uuid" : "c9c57942-7370-4f55-a26d-5d73f1ed84db",
+  "paths" : {
+    "6e0d8783-69b5-4f33-bc97-644a5d748950" : 12.5
+  },
+  "capacity" : 7,
+  "bundleSize" : 4,
+  "letterToBucketTime" : 3.0
+}, {
+  "x" : 5.0,
+  "y" : 150.0,
+  "radius" : 5.0,
+  "uuid" : "a994f3e6-26f4-43bb-9486-7a5927ccbd53",
+  "paths" : {
+    "a8e94785-ef69-4f5b-9519-20d2626dca94" : 12.5
+  },
+  "capacity" : 7,
+  "bundleSize" : 4,
+  "letterToBucketTime" : 3.0
+}, {
+  "x" : 5.0,
+  "y" : 75.0,
+  "radius" : 5.0,
+  "uuid" : "125eacc2-cb72-43ba-be75-c0533cc13ac9",
+  "paths" : {
+    "49419bc7-270b-44a7-93ef-a27202577e59" : 12.5
+  },
+  "capacity" : 7,
+  "bundleSize" : 4,
+  "letterToBucketTime" : 3.0
+} ]

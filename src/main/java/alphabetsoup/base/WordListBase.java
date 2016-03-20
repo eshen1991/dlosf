@@ -33,21 +33,25 @@ public class WordListBase implements WordList {
 	 */
 	public void generateWordsFromFile(String filename, List<LetterColor> colors, int num_words) {
 		//open file to get words
-		String content;
-		try {
-			FileInputStream fis = new FileInputStream(filename);
-			int x= fis.available();
-			byte b[]= new byte[x];
-			fis.read(b);
-			content = new String(b);
-		}
-		catch (Throwable e) {
-			System.out.println("Could not open file " + filename);
-			return;
-		}
+		baseWords = SimulationWorld.getBaseWords();
+		if (baseWords == null) {
 
-		//store info to build more new words
-		baseWords = content.split("(\r\n)|\n|\r");	//split on any newline combo
+
+			String content;
+			try {
+				FileInputStream fis = new FileInputStream(filename);
+				int x = fis.available();
+				byte b[] = new byte[x];
+				fis.read(b);
+				content = new String(b);
+			} catch (Throwable e) {
+				System.out.println("Could not open file " + filename);
+				return;
+			}
+
+			//store info to build more new words
+			baseWords = content.split("(\r\n)|\n|\r");    //split on any newline combo
+		}
 		baseColors = colors;
 		
 		//compute letter probabilities based on word set

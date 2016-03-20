@@ -1,0 +1,78 @@
+[ {
+  "x" : 195.0,
+  "y" : 225.0,
+  "radius" : 5.0,
+  "uuid" : "6deda72b-0a8a-4c8a-a2fa-04f8ebed9665",
+  "paths" : {
+    "38ac3f8d-29ec-465b-9691-86448cd4b22e" : 12.5
+  },
+  "capacity" : 7,
+  "bucketToLetterTime" : 2.0,
+  "wordCompletionTime" : 5.0
+}, {
+  "x" : 195.0,
+  "y" : 187.5,
+  "radius" : 5.0,
+  "uuid" : "22414418-7524-482a-a6df-45c9da92ef19",
+  "paths" : {
+    "1b8617bd-7df0-4607-867d-812d62713356" : 12.5
+  },
+  "capacity" : 7,
+  "bucketToLetterTime" : 2.0,
+  "wordCompletionTime" : 5.0
+}, {
+  "x" : 195.0,
+  "y" : 75.0,
+  "radius" : 5.0,
+  "uuid" : "5f112136-54c4-4c24-9ae2-61ee78c063b5",
+  "paths" : {
+    "a11dd69a-8584-460b-b291-493cadfe3285" : 12.5
+  },
+  "capacity" : 7,
+  "bucketToLetterTime" : 2.0,
+  "wordCompletionTime" : 5.0
+}, {
+  "x" : 195.0,
+  "y" : 112.5,
+  "radius" : 5.0,
+  "uuid" : "a9a0360a-2896-45e4-9a69-29447ea3fe33",
+  "paths" : {
+    "cb3ed248-5580-4635-8a83-fd47b969e5c2" : 12.5
+  },
+  "capacity" : 7,
+  "bucketToLetterTime" : 2.0,
+  "wordCompletionTime" : 5.0
+}, {
+  "x" : 195.0,
+  "y" : 150.0,
+  "radius" : 5.0,
+  "uuid" : "47a6f08a-077b-40aa-a2fd-042640a583f2",
+  "paths" : {
+    "6da40ac8-619b-4acc-a6f5-ebac00f7ad83" : 12.5
+  },
+  "capacity" : 7,
+  "bucketToLetterTime" : 2.0,
+  "wordCompletionTime" : 5.0
+}, {
+  "x" : 195.0,
+  "y" : 37.5,
+  "radius" : 5.0,
+  "uuid" : "bfe8e8a3-86a3-4045-9d69-86fbf79da0bc",
+  "paths" : {
+    "f3506282-4ee6-4c3f-a472-abff2d71dd42" : 12.5
+  },
+  "capacity" : 7,
+  "bucketToLetterTime" : 2.0,
+  "wordCompletionTime" : 5.0
+}, {
+  "x" : 195.0,
+  "y" : 262.5,
+  "radius" : 5.0,
+  "uuid" : "2e6a09e5-e873-4634-bd35-ba7aa4954d57",
+  "paths" : {
+    "c54f71bf-2d0b-4a96-aef3-989878537d0a" : 12.5
+  },
+  "capacity" : 7,
+  "bucketToLetterTime" : 2.0,
+  "wordCompletionTime" : 5.0
+} ]

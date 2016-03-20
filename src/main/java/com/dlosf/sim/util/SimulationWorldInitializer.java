@@ -12,6 +12,7 @@ import alphabetsoup.waypointgraph.BucketbotDriver;
 import alphabetsoup.waypointgraph.Waypoint;
 import alphabetsoup.waypointgraph.WaypointGraph;
 import com.dlosf.sim.graph.SimulationWorldGraph;
+import com.dlosf.sim.greedy.SimulationWorldGreedy;
 import com.dlosf.sim.simple.Bot;
 import com.dlosf.sim.simple.SimulationWorldSimple;
 import org.codehaus.jackson.map.ObjectMapper;
@@ -42,6 +43,7 @@ public class SimulationWorldInitializer {
 			case GRAPH:
 				simulationWorld = new SimulationWorldGraph();
 				recordInitData((SimulationWorldGraph)simulationWorld, dir);
+
 				break;
 			default:
 
@@ -97,8 +99,8 @@ public class SimulationWorldInitializer {
 	}
 
 
-	public static SimulationWorldGraph loadGraphFromInitData(String dir) {
-		SimulationWorldGraph simulationWorld = null;
+	public static SimulationWorld loadGraphFromInitData(String dir, SimWorldType smType) {
+		SimulationWorld simulationWorld = null;
 		File outputDir = new File(dir);
 		if (!outputDir.exists()) {
 			System.out.println("directory " + dir + " doesn't exist and simulation world can't be created from initial data set ");
@@ -249,9 +251,13 @@ public class SimulationWorldInitializer {
 			e.printStackTrace();
 			return null;
 		}
-
-		simulationWorld = new SimulationWorldGraph(buckets,bots,letterStations,wordStations,wordList,unusedBucketStorageLocations, usedBucketStorageLocations, waypointGraph, params);
-
+		switch (smType) {
+			case GRAPH: simulationWorld = new SimulationWorldGraph(buckets, bots, letterStations, wordStations, wordList, unusedBucketStorageLocations, usedBucketStorageLocations, waypointGraph, params);
+				        break;
+			case GREEDY: simulationWorld = new SimulationWorldGreedy(buckets, bots, letterStations, wordStations, wordList, unusedBucketStorageLocations, usedBucketStorageLocations, waypointGraph, params);
+				        break;
+			default:
+		}
 		return simulationWorld;
 	}
 
@@ -515,6 +521,26 @@ public class SimulationWorldInitializer {
 
 
 	}
+
+/*	public static String[] getBaseWords(String filename) {
+
+			//open file to get words
+			String content;
+			try {
+				FileInputStream fis = new FileInputStream(filename);
+				int x= fis.available();
+				byte b[]= new byte[x];
+				fis.read(b);
+				content = new String(b);
+			}
+			catch (Throwable e) {
+				System.out.println("Could not open file " + filename);
+				return null;
+			}
+
+			//store info to build more new words
+			return content.split("(\r\n)|\n|\r");	//split on any newline combo
+	}*/
 
 	/**Launches the Alphabet Soup simulation without user interface.
 	 * @param args

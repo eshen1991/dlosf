@@ -1,0 +1,221 @@
+[ {
+  "x" : 43.642128,
+  "y" : 252.19339,
+  "radius" : 4.0,
+  "uuid" : "932416e4-3dd4-4a9a-9b94-d95251ddd4bd",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 180.12537,
+  "y" : 47.837257,
+  "radius" : 4.0,
+  "uuid" : "39c403cb-cfb2-4295-8d81-56a75329b60a",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 104.983215,
+  "y" : 194.84984,
+  "radius" : 4.0,
+  "uuid" : "2a09cd32-4eba-496d-9870-a93a94582655",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 63.397057,
+  "y" : 144.5631,
+  "radius" : 4.0,
+  "uuid" : "df525f10-92a0-41b7-8c59-bc5c4051fde0",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 15.907166,
+  "y" : 159.16638,
+  "radius" : 4.0,
+  "uuid" : "af27c29f-a5a0-4e51-8f87-2647f5737052",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 102.00791,
+  "y" : 67.37349,
+  "radius" : 4.0,
+  "uuid" : "bb7749e9-f13a-4d75-88cb-1c86641eac31",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 87.830444,
+  "y" : 22.367777,
+  "radius" : 4.0,
+  "uuid" : "b7853636-e34b-453c-8037-cf3a8ee93e9b",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 72.481445,
+  "y" : 148.60591,
+  "radius" : 4.0,
+  "uuid" : "93d0d5e4-d45e-4b1e-b91f-2eea7e52fcf8",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 35.106197,
+  "y" : 286.53812,
+  "radius" : 4.0,
+  "uuid" : "f2a2b3cd-e450-403f-9a7d-f6f3b256b89a",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 169.27339,
+  "y" : 129.17267,
+  "radius" : 4.0,
+  "uuid" : "cce787a4-a0a6-4299-8660-013f71adebac",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 92.711914,
+  "y" : 84.84859,
+  "radius" : 4.0,
+  "uuid" : "721c4b59-80f0-4e08-9951-fd15f425acca",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 40.867977,
+  "y" : 17.589146,
+  "radius" : 4.0,
+  "uuid" : "87f7bca1-f99c-439c-b130-014c5fde6e52",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 22.34933,
+  "y" : 130.2193,
+  "radius" : 4.0,
+  "uuid" : "2a88e522-96f3-49d2-b951-83007225850f",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 183.0235,
+  "y" : 158.79468,
+  "radius" : 4.0,
+  "uuid" : "e1dafd66-944c-4fc5-8b96-f2ebe183aabb",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 55.038097,
+  "y" : 285.19,
+  "radius" : 4.0,
+  "uuid" : "b28beeae-c4d7-46de-b708-e65b8409800a",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 181.83145,
+  "y" : 249.38615,
+  "radius" : 4.0,
+  "uuid" : "3b7935a1-908b-41e9-9d64-95d8f46419d0",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 93.897064,
+  "y" : 95.72563,
+  "radius" : 4.0,
+  "uuid" : "40f6f7c3-b866-4272-ba00-a89409647450",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 51.583584,
+  "y" : 19.727192,
+  "radius" : 4.0,
+  "uuid" : "a72deb7d-c8c0-467c-aff3-9d5d0c2d7b2c",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 135.20499,
+  "y" : 101.52152,
+  "radius" : 4.0,
+  "uuid" : "32a54112-f44f-40f8-80ba-5064e31fcffe",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+}, {
+  "x" : 118.75925,
+  "y" : 14.679401,
+  "radius" : 4.0,
+  "uuid" : "c147b212-9329-42f5-8e0e-97dfd1a15c63",
+  "paths" : {
+  },
+  "bucketPickupSetdownTime" : 0.5,
+  "maxAcceleration" : 100.0,
+  "maxVelocity" : 50.0,
+  "collisionPenaltyTime" : 0.5
+} ]
